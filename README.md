@@ -1,3 +1,6 @@
+# KAMALESH S
+# 212223060108
+# Date : 06-09-2025
 # EXP 1(A) FAN SPEED CONTROLLER SYSTEM USING TEMPERATURE SENSOR
 
 # Aim:
@@ -5,15 +8,16 @@
 
 # Hardware / Software Tools required:
 	PC/ Laptop with Internet connection
-  Tinker CAD tool (Online)
+    Tinker CAD tool (Online)
 	Arduino UNO Board/ESP-32
 	Temperature Sensor (DHT11/DHT22/TMP36)
 
-# Circuit Diagram:
+# Schematic view:
+<img width="1919" height="911" alt="image" src="https://github.com/user-attachments/assets/d572d084-1980-475e-a666-fef850698248" />
 
----
-To upload
---
+# Circuit Diagram:
+<img width="1919" height="972" alt="image" src="https://github.com/user-attachments/assets/e775a5d2-b090-426a-94b1-d772da760a1c" />
+
 
 # Procedure
 
@@ -55,12 +59,66 @@ Step 7: Save Your Work
 
 # Program
 
----
-To upload
---
+```
+#include <LiquidCrystal.h>
+
+// LCD pin setup: RS, E, D4, D5, D6, D7
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+
+int sensorPin = A0;
+int motorPin = 9;
+int sensorValue;
+float voltage, temperatureC;
+int fanSpeed;
+
+void setup() {
+  Serial.begin(9600);
+  lcd.begin(16, 2);   // Initialize LCD (16x2)
+  pinMode(motorPin, OUTPUT);
+}
+
+void loop() {
+  // Read temperature sensor
+  sensorValue = analogRead(sensorPin);
+  voltage = sensorValue * (5.0 / 1023.0);
+  temperatureC = (voltage - 0.5) * 100.0;
+
+  // Control fan speed
+  if (temperatureC < 25) {
+    fanSpeed = 0;
+  } else if (temperatureC > 40) {
+    fanSpeed = 255;
+  } else {
+    fanSpeed = map(temperatureC, 25, 40, 50, 255);
+  }
+
+  analogWrite(motorPin, fanSpeed);
+
+  // Print to Serial Monitor
+  Serial.print("Temp: ");
+  Serial.print(temperatureC);
+  Serial.print(" °C | Fan Speed: ");
+  Serial.println(fanSpeed);
+
+  // Print to LCD
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(temperatureC);
+  lcd.print("C   ");
+
+  lcd.setCursor(0, 1);
+  lcd.print("Fan: ");
+  lcd.print(fanSpeed);
+  lcd.print("   ");
+
+  delay(500);
+}
+```
 
 # Result
 
----
-To upload
---
+
+
+https://github.com/user-attachments/assets/956a5850-26b5-4d4b-9647-5f772dd9f8ca
+
+
